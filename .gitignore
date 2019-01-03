@@ -1,0 +1,11 @@
+# Compressed files
+*.zip
+*.gz
+*.7z
+*.tar
+
+# Borderline experimental stuff
+**/test/*
+
+# data files
+*.csv
