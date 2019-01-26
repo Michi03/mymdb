@@ -4,6 +4,10 @@
 *.7z
 *.tar
 
+# dependencies
+package-lock.json
+**/node_modules/*
+
 # Borderline experimental stuff
 **/test/*
 
