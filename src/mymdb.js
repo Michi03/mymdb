@@ -3,17 +3,35 @@
         return;
     window.hasRun = true;
 
-    var watched = parseRatings();
+    // get array of rated movies
+    var rated = parseRatings();
+    // get current movie
     var title = window.location.href;
     var id = title.split('/')[4];
+
     if (typeof id !== "undefined")
     {
-        if (typeof watched[id] !== "undefined")
-            document.body.style.border = "5px solid green";
-        else
-            document.body.style.border = "5px solid red";
+        // check if movie has been rated
+        if (typeof rated[id] !== "undefined")
+        {
+            // get information about movie
+            var httpReq = new XMLHttpRequest();
+            // url for omdb request
+            var url = "https://www.omdbapi.com/?apikey=BanMePlz&i=" + id;
+            httpReq.open("GET",url,false);
+            httpReq.send(null);
+            // object with movie info
+            var movieInfo = JSON.parse(httpReq.responseText);
+
+            // add links to other movies from director
+
+        }
     }
 })();
+
+// res = [ movie_object_1 , ... , movie_object_n ]
+// movie_object_i = { directors , writers , actors }
+// directors / writers / actors = [ person_id_1 , ... , person_id_n ]
 
 function parseRatings() {
     var res = [];
@@ -29,3 +47,5 @@ function parseRatings() {
     }
     return res;
 }
+
+// movieInfo = { Title , Year , Rated (PG/R/etc) , Released , Runtime , Genre , Director , Writer , Actors , imdbRating , imdbID , Metascore }
