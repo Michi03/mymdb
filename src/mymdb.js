@@ -16,7 +16,6 @@
     if (typeof id !== "undefined")
     {
         // check if movie has been rated
-        console.log(rated.ids[id]);
         if (typeof rated.ids[id] !== "undefined")
         {
             // get information about movie
@@ -30,12 +29,9 @@
             var director = document.querySelector(".credit_summary_item").children[1].innerHTML;
 
             // add links to other movies from director
-            console.log(director);
-            console.log(Object.keys(rated.directors));
             if (typeof rated.directors[director] !== "undefined")
             {
                 var dirMovies = rated.directors[director];
-                console.log(dirMovies);
                 dirMovies.forEach(function(dirId,idx) {
                     if (dirId !== id)
                     {
@@ -61,13 +57,16 @@ function parseRatings() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET",browser.extension.getURL("data/ratings.csv"),false);
     xmlHttp.send(null);
+    if (xmlHttp.status >= 400)
+    {
+        console.log("Couldn't retrieve ratings file");
+        return {};
+    }
     var text = xmlHttp.responseText;
     var lines = text.split(/\r\n|\n/);
-    console.log(lines);
     for (var i = 1; i < lines.length; i++)
     {
         var fields = lines[i].split(',');
-        console.log(fields);
         var curId = fields[0];
         ids[curId] = fields[3]; // store id with title
         var curDir = fields[fields.length-1];

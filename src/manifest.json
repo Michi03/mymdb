@@ -1,12 +1,9 @@
 {
     "manifest_version": 2,
     "name": "mymdb",
-    "version": "1.0",
+    "version": "1.1",
     "description": "If it's sweet I'll lick it for an hour and even if it's sour I might lick it in the shower",
     "homepage_url": "https://github.com/Michi03/mymdb",
-    "web_accessible_resources":[
-        "data/ratings.csv"
-    ],
     "content_scripts":[
         {
             "matches": ["https://*.imdb.com/title/*"],
@@ -19,5 +16,10 @@
     "permissions": [
       "https://www.omdbapi.com/*",
       "webRequest"
-    ]
+    ],
+    "applications": {
+      "gecko": {
+        "id": "mymdb1.1@Michi03.com"
+      }
+    }
 }
