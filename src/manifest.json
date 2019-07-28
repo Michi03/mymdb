@@ -1,19 +1,23 @@
 {
-    "manifest_version":2,
-    "name":"mymdb",
-    "version":"0.1",
-    "description":"If it's sweet I'll lick it for an hour and even if it's sour I might lick it in the shower",
-    "homepage_url":"https://github.com/Michi03/mymdb",
-    "permissions":[
-        "activeTab"
-    ],
+    "manifest_version": 2,
+    "name": "mymdb",
+    "version": "1.0",
+    "description": "If it's sweet I'll lick it for an hour and even if it's sour I might lick it in the shower",
+    "homepage_url": "https://github.com/Michi03/mymdb",
     "web_accessible_resources":[
         "data/ratings.csv"
     ],
     "content_scripts":[
         {
-            "matches":["https://www.imdb.com/title/*"],
-            "js":["mymdb.js"]
+            "matches": ["https://*.imdb.com/title/*"],
+            "js": ["mymdb.js"]
         }
+    ],
+    "web_accessible_resources": [
+        "data/*"
+    ],
+    "permissions": [
+      "https://www.omdbapi.com/*",
+      "webRequest"
     ]
 }
