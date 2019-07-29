@@ -3,79 +3,57 @@
         return;
     window.hasRun = true;
     var dirDiv = document.createElement("div");
+    dirDiv.id = "mymdb";
     dirDiv.setAttribute("class", "credit_summary_item");
     dirDiv.innerHTML = '<h4 class="inline">Other movies:</h4>';
     document.querySelector(".plot_summary").appendChild(dirDiv);
+    // get director
+    var director = document.querySelector(".credit_summary_item").children[1].innerHTML;
+    // add other movies
+    var getRatings = browser.storage.local.get(director, function(res) {
+        alert("The director object:" + JSON.stringify(res.key));
+    });
 
-    // get array of rated movies
-    var rated = parseRatings();
-    // get current movie
-    var title = window.location.href;
-    var id = title.split('/')[4];
-
-    if (typeof id !== "undefined")
-    {
-        // check if movie has been rated
-        if (typeof rated.ids[id] !== "undefined")
-        {
-            // get information about movie
-            /*var httpReq = new XMLHttpRequest();
-            // url for omdb request
-            var url = "https://www.omdbapi.com/?apikey=6058aaab&i=" + id;
-            httpReq.open("GET",url,false);
-            httpReq.send(null);
-            // object with movie info
-            var movieInfo = JSON.parse(httpReq.responseText);*/
-            var director = document.querySelector(".credit_summary_item").children[1].innerHTML;
-
-            // add links to other movies from director
-            if (typeof rated.directors[director] !== "undefined")
-            {
-                var dirMovies = rated.directors[director];
-                dirMovies.forEach(function(dirId,idx) {
-                    if (dirId !== id)
-                    {
-                        if (idx > 0)
-                            dirDiv.innerHTML += ", ";
-                        var movieLink = document.createElement("a");
-                        movieLink.setAttribute("href", "/title/" + dirId);
-                        movieLink.innerHTML = rated.ids[dirId];
-                        dirDiv.appendChild(movieLink);
-                    }
-                });
-            }
-        }
-    }
 })();
-// res = [ movie_object_1 , ... , movie_object_n ]
-// movie_object_i = { directors , writers , actors }
-// directors / writers / actors = [ person_id_1 , ... , person_id_n ]
 
-function parseRatings() {
-    var ids = [];
-    var directors = [];
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET",browser.extension.getURL("data/ratings.csv"),false);
-    xmlHttp.send(null);
-    if (xmlHttp.status >= 400)
-    {
-        console.log("Couldn't retrieve ratings file");
-        return {};
-    }
-    var text = xmlHttp.responseText;
-    var lines = text.split(/\r\n|\n/);
-    for (var i = 1; i < lines.length; i++)
-    {
-        var fields = lines[i].split(',');
-        var curId = fields[0];
-        ids[curId] = fields[3]; // store id with title
-        var curDir = fields[fields.length-1];
-        if (typeof directors[curDir] === "undefined")
-            directors[curDir] = [curId];
-        else
-            directors[curDir].push(curId);
-    }
-    return {"directors": directors, "ids": ids};
+function addRating(id,title,director) {
+
+    browser.storage.local.set({key: directors[key]});
 }
 
-// movieInfo = { Title , Year , Rated (PG/R/etc) , Released , Runtime , Genre , Director , Writer , Actors , imdbRating , imdbID , Metascore } */
+function onGot(director) {
+    console.log("SUCCESS");
+    console.log(director);
+    // get current movie
+    var url = window.location.href;
+    var id = url.split('/')[4];
+    var title = document.querySelector("h1").firstChild.data;
+    var rating = document.querySelector(".star-rating-value").innerHTML;
+    var dirDiv = document.querySelector("#mymdb");
+    var inStorage = false;
+    for (var i = 0; i < director.length; i++) {
+        var movie = director[i];
+        if (movie.id === id)
+            continue;
+        if (dirDiv.children.length > 1)
+            dirDiv.innerHTML += ", ";
+        var movieLink = document.createElement("a");
+        movieLink.setAttribute("href", "/title/" + movie.id);
+        movieLink.innerHTML = movie.title + " (" + movie.rating + ")";
+        dirDiv.appendChild(movieLink);
+    }
+    // if movie is rated store rating
+    if (inStorage === false)
+    {
+        if (rating === 0)
+            return;
+        director.push({"id":id, "title": title, "rating": rating});
+        directorName = document.querySelector(".credit_summary_item").children[1].innerHTML;
+        browser.storage.local.set({directorName: director});
+    }
+}
+
+function onErr(val) {
+    console.log("ERROR");
+    console.log(val);
+}
