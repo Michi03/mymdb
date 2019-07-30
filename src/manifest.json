@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "mymdb",
-    "version": "1.4",
+    "version": "1.6",
     "description": "When checking the IMDB page of a specific movie, this Add-On adds links to movies you previously rated on IMDB by the same director to the page.",
     "homepage_url": "https://github.com/Michi03/mymdb",
     "content_scripts":[
@@ -15,16 +15,13 @@
         }
     ],
     "permissions": [
-      "https://www.omdbapi.com/*",
       "https://www.imdb.com/title/*",
       "https://www.imdb.com/user/*",
-      "webRequest",
-      "storage",
-      "download"
+      "storage"
     ],
     "applications": {
       "gecko": {
-        "id": "mymdb1.4@Michi03.com"
+        "id": "mymdb@Michi03.com"
       }
     },
     "options_ui": {
