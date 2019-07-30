@@ -5,6 +5,7 @@ var rating = "0";
 var storedRating = "0";
 var dirDiv = {};
 var dirMovies;
+var rated = false;
 
 (function() {
     if (window.hasRun === true)
@@ -21,8 +22,8 @@ var dirMovies;
 })();
 
 function updateRating() {
-    rating = document.querySelector(".star-rating-value").innerHTML;
-    if (storedRating !== rating && document.querySelector("#nbusername") !== null)
+    rating = document.querySelector(".star-rating").getAttribute("value");
+    if (storedRating !== rating && document.querySelector("#nbusername") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
     {
         storedRating = rating;
         console.log("Change detected!");
@@ -33,7 +34,6 @@ function updateRating() {
                 if (movie === id)
                 {
                     delete(dirMovies[idx]);
-                    console.log(dirMovies);
                     var store = {};
                     store[directorName] = dirMovies;
                     browser.storage.sync.set(store, onSet);
@@ -59,7 +59,8 @@ function updateRating() {
                     if (movie === id)
                         return;
                 });
-                // add movie to rated movies
+
+                // add movie to rated movie
                 dirMovies.push(id);
                 store = {};
                 store[directorName] = dirMovies;
@@ -73,7 +74,7 @@ function gotDir(directorObj) {
     // get current movie
     id = window.location.href.split('/')[4];
     title = document.querySelector("h1").firstChild.data;
-    rating = document.querySelector(".star-rating-value").innerHTML;
+    rating = document.querySelector(".star-rating").getAttribute("value")
     var dirDiv = document.querySelector("#mymdb");
     var inStorage = false;
     dirMovies = directorObj[directorName];
@@ -86,8 +87,11 @@ function gotDir(directorObj) {
             browser.storage.sync.get(movie, gotMovie);
         });
     }
-    // periodically check if rating changed
-    setInterval(updateRating, 1000);
+    else
+    {
+        // periodically check if rating changed
+        setInterval(updateRating, 1000);
+    }
 }
 
 function gotMovie(movieObj) {
@@ -96,7 +100,10 @@ function gotMovie(movieObj) {
     if (typeof movie !== "undefined" && typeof movie[1] !== "undefined")
     {
         if (curId === id)
+        {
             storedRating = movie[1];
+            rated = true;
+        }
         else
         {
             if (dirDiv.children.length > 1)
@@ -107,6 +114,8 @@ function gotMovie(movieObj) {
             dirDiv.appendChild(movieLink);
         }
     }
+    // periodically check if rating changed
+    setInterval(updateRating, 1000);
 }
 
 function onErr(val) {

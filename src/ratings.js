@@ -35,7 +35,7 @@ function parseRatings(dataString) {
 
 function storeRatings(e) {
     e.preventDefault();
-    var items = Object.keys(directors);;
+    var items = Object.keys(directors);
     document.querySelector("#output").innerHTML = "";
     items.forEach(function(dir) {
         var dirMovies = [];
