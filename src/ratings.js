@@ -1,4 +1,6 @@
 const directors = [];
+var movieCounter = 0;
+var movieAmount = 0;
 
 function readRatings(e) {
     e.preventDefault();
@@ -30,30 +32,44 @@ function parseRatings(dataString) {
         var item = document.createElement("li");
         item.innerHTML = curDir + ", " + JSON.stringify(movie);
         document.querySelector("#output").appendChild(item);
+        movieAmount++;
     }
 }
 
 function storeRatings(e) {
     e.preventDefault();
     var items = Object.keys(directors);
-    document.querySelector("#output").innerHTML = "";
+    document.querySelector("#output").innerHTML = "Storing Ratings";
     items.forEach(function(dir) {
         var dirMovies = [];
         directors[dir].forEach(function(movie) {
             dirMovies.push(movie.id);
             var store = {};
             store[movie.id] = [movie.title,movie.rating];
-            browser.storage.sync.set(store, outputRating);
+            browser.storage.sync.set(store, progressBar);
         });
         // MOST INFURIATING CRAP EVER!
         var store = {};
         store[dir] = dirMovies;
-        browser.storage.sync.set(store, outputRating);
+        browser.storage.sync.set(store);
     });
 }
 
 function getStorage() {
     browser.storage.sync.get(null, outputRating);
+}
+
+function progressBar() {
+    movieCounter++;
+    if (movieCounter % 5 === 0)
+        document.querySelector("#output").innerHTML = "Storing Ratings";
+    document.querySelector("#output").innerHTML += ".";
+    document.querySelector("#progress").innerHTML = "(" + movieCounter + "/" + movieAmount + ")";
+    if (movieCounter >= movieAmount)
+    {
+        document.querySelector("#output").innerHTML = "Done";
+        document.querySelector("#progress").innerHTML = "";
+    }
 }
 
 function outputRating(elem) {

@@ -78,9 +78,11 @@ function gotDir(directorObj) {
     // get current movie
     id = window.location.href.split('/')[4];
     title = document.querySelector("h1").firstChild.data;
-    rating = document.querySelector(".star-rating").getAttribute("value")
+    if (document.querySelector(".star-rating") === null)
+        rating = "0";
+    else
+        rating = document.querySelector(".star-rating").getAttribute("value")
     var dirDiv = document.querySelector("#mymdb");
-    var inStorage = false;
     dirMovies = directorObj[directorName];
     if (typeof dirMovies !== "undefined")
     {
