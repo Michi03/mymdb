@@ -55,16 +55,18 @@ function updateRating() {
             }
             else
             {
-                dirMovies.forEach(function(movie,idx) {
-                    if (movie === id)
-                        return;
-                });
-
-                // add movie to rated movie
-                dirMovies.push(id);
-                store = {};
-                store[directorName] = dirMovies;
-                browser.storage.sync.set(store, onSet);
+                for (var i = 0; i < dirMovies.length; i++)
+                {
+                    movie = dirMovies[i];
+                    if (movie !== id && i === dirMovies.length-1)
+                    {
+                        // add movie to rated movie
+                        dirMovies.push(id);
+                        store = {};
+                        store[directorName] = dirMovies;
+                        browser.storage.sync.set(store, onSet);
+                    }
+                }
             }
         }
     }
@@ -80,42 +82,39 @@ function gotDir(directorObj) {
     dirMovies = directorObj[directorName];
     if (typeof dirMovies !== "undefined")
     {
-        console.log(dirMovies);
         // get other movies of director
         dirMovies.forEach(function(movie) {
             // movie = {id:[title,rating]}
             browser.storage.sync.get(movie, gotMovie);
         });
     }
-    else
-    {
-        // periodically check if rating changed
-        setInterval(updateRating, 1000);
-    }
+    // periodically check if rating changed
+    setInterval(updateRating, 1000);
 }
 
 function gotMovie(movieObj) {
-    var curId = Object.keys(movieObj)[0];
-    var movie = movieObj[curId];
-    if (typeof movie !== "undefined" && typeof movie[1] !== "undefined")
+    if (Object.keys(movieObj).length === 1)
     {
-        if (curId === id)
+        var curId = Object.keys(movieObj)[0];
+        var movie = movieObj[curId];
+        if (typeof movie !== "undefined" && typeof movie[0] !== "undefined" && typeof movie[1] !== "undefined")
         {
-            storedRating = movie[1];
-            rated = true;
-        }
-        else
-        {
-            if (dirDiv.children.length > 1)
-                dirDiv.innerHTML += ", ";
-            var movieLink = document.createElement("a");
-            movieLink.setAttribute("href", "/title/" + curId);
-            movieLink.innerHTML = movie[0] + " (" + movie[1]+ ")";
-            dirDiv.appendChild(movieLink);
+            if (curId === id)
+            {
+                storedRating = movie[1];
+                rated = true;
+            }
+            else
+            {
+                if (dirDiv.children.length > 1)
+                    dirDiv.innerHTML += ", ";
+                var movieLink = document.createElement("a");
+                movieLink.setAttribute("href", "/title/" + curId);
+                movieLink.innerHTML = movie[0] + " (" + movie[1]+ ")";
+                dirDiv.appendChild(movieLink);
+            }
         }
     }
-    // periodically check if rating changed
-    setInterval(updateRating, 1000);
 }
 
 function onErr(val) {
