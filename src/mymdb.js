@@ -58,6 +58,8 @@ function updateRating() {
                 for (var i = 0; i < dirMovies.length; i++)
                 {
                     movie = dirMovies[i];
+                    if (movie === id)
+                        return;
                     if (movie !== id && i === dirMovies.length-1)
                     {
                         // add movie to rated movie
