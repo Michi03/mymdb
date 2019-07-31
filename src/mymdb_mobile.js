@@ -111,7 +111,7 @@ function gotMovie(movieObj) {
             else
             {
                 var movieLink = document.createElement("li");
-                movieLink.innerHTML = `<a href="/title/${curId}">${movie[0]}(${movie[1]})</a>`;
+                movieLink.innerHTML = `<a href="/title/${curId}">${movie[0]} (${movie[1]})</a>`;
                 document.querySelector("#mymdb").appendChild(movieLink);
             }
         }
