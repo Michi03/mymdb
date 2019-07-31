@@ -10,13 +10,17 @@
             "js": ["mymdb.js"]
         },
         {
-            "matches": ["https://www.imdb.com/user/*/ratings*"],
+            "matches": ["https://m.imdb.com/title/*"],
+            "js": ["mymdb_mobile.js"]
+        },
+        {
+            "matches": ["https://*.imdb.com/user/*/ratings*"],
             "js": ["export.js"]
         }
     ],
     "permissions": [
-      "https://www.imdb.com/title/*",
-      "https://www.imdb.com/user/*",
+      "https://*.imdb.com/title/*",
+      "https://*.imdb.com/user/*",
       "storage"
     ],
     "applications": {
