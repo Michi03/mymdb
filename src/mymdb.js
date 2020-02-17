@@ -1,72 +1,107 @@
 var directorName = "";
+var secondDirector = "";
 var title = "";
 var id = "";
 var rating = "0";
 var storedRating = "0";
 var dirDiv = {};
-var dirMovies;
-var rated = false;
+var dirMovies = {};
 
 (function() {
     if (window.hasRun === true)
         return;
     window.hasRun = true;
+    // get director(s)
+    let dirList = document.querySelector(".credit_summary_item").children;
+    directorName = dirList[1].innerHTML;
     dirDiv = document.createElement("div");
     dirDiv.id = "mymdb";
     dirDiv.setAttribute("class", "credit_summary_item");
-    dirDiv.innerHTML = '<h4 class="inline">Other movies:</h4>';
     document.querySelector(".plot_summary").appendChild(dirDiv);
-    // get movies of director
-    directorName = document.querySelector(".credit_summary_item").children[1].innerHTML;
     browser.storage.sync.get(directorName, gotDir);
+    if (dirList.length > 2)
+    {
+        secondDirector = dirList[2].innerHTML;
+        browser.storage.sync.get(secondDirector, gotDir);
+    }
 })();
+
+function appendList(name) {
+    let divContent = document.createElement("h4");
+    divContent.classList.add("inline");
+    divContent.innerHTML = 'Other movies by ' + name + ':';
+    dirDiv.appendChild(divContent);
+    let movieList = document.createElement("table");
+    movieList.setAttribute("id", name);
+    dirDiv.appendChild(movieList);
+}
 
 function updateRating() {
     rating = document.querySelector(".star-rating").getAttribute("value");
-    if (storedRating !== rating && document.querySelector("#nbusername") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
+    if (storedRating !== rating && document.querySelector(".imdb-header__account-toggle--logged-in") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
     {
+        console.log("RATING CHANGED");
         storedRating = rating;
-        console.log("Change detected!");
-        if (rating === "0")
+        if (rating === "0" && typeof dirMovies[directorName] !== "undefined")
         {
-            // delte id from director movie array
-            dirMovies.forEach(function(movie,idx) {
+            // delete id from director movie array
+            dirMovies[directorName].forEach(function(movie,idx) {
                 if (movie === id)
                 {
-                    delete(dirMovies[idx]);
-                    var store = {};
-                    store[directorName] = dirMovies;
+                    delete(dirMovies[directorName][idx]);
+                    let store = {};
+                    store[directorName] = dirMovies[directorName];
                     browser.storage.sync.set(store, onSet);
                 }
             });
+            if (secondDirector !== "")
+            {
+                dirMovies[secondDirector].forEach(function(movie,idx) {
+                    if (movie === id)
+                    {   
+                        delete(dirMovies[secondDirector][idx]);
+                        let store = {};
+                        store[secondDirector] = dirMovies[secondDirector];
+                        browser.storage.sync.set(store, onSet);
+                    }
+                });
+            }
         }
-        else
+        else if (rating !== "0")
         {
-            var store = {};
+            let store = {};
             store[id] = [title,rating];
             browser.storage.sync.set(store, onSet);
-            if (typeof dirMovies === "undefined")
+            for (let i = 0; true; i++)
             {
-                // add movie to rated movies
-                dirMovies = [id]
-                store = {};
-                store[directorName] = dirMovies;
-                browser.storage.sync.set(store, onSet);
-            }
-            else
-            {
-                for (var i = 0; i < dirMovies.length; i++)
+                movie = dirMovies[directorName][i];
+                if (movie === id)
+                    return;
+                if (movie !== id && i >= dirMovies[directorName].length-1)
                 {
-                    movie = dirMovies[i];
+                    // add movie to rated movie
+                    dirMovies[directorName].push(id);
+                    store = {};
+                    store[directorName] = dirMovies[directorName];
+                    browser.storage.sync.set(store, onSet);
+                    break;
+                }
+            }
+            if (secondDirector !== "")
+            {
+                for (let i = 0; true; i++)
+                {
+                    movie = dirMovies[secondDirector][i];
                     if (movie === id)
                         return;
-                    if (movie !== id && i === dirMovies.length-1)
+                    if (movie !== id && i >= dirMovies[secondDirector].length-1)
                     {
                         // add movie to rated movie
-                        dirMovies.push(id);
+                        dirMovies[secondDirector].push(id);
                         store = {};
-                        store[directorName] = dirMovies;
+                        store[secondDirector] = dirMovies[secondDirector];
                         browser.storage.sync.set(store, onSet);
+                        return;
                     }
                 }
             }
@@ -82,15 +117,29 @@ function gotDir(directorObj) {
         rating = "0";
     else
         rating = document.querySelector(".star-rating").getAttribute("value")
-    var dirDiv = document.querySelector("#mymdb");
-    dirMovies = directorObj[directorName];
-    if (typeof dirMovies !== "undefined")
+    let key = "";
+    if (typeof directorObj !== "undefined" && Object.keys(directorObj).length > 0)
     {
-        // get other movies of director
-        dirMovies.forEach(function(movie) {
-            // movie = {id:[title,rating]}
-            browser.storage.sync.get(movie, gotMovie);
+        key = Object.keys(directorObj)[0];
+        if (directorObj[key].length > 1 || directorObj[key][0] !== id)
+            appendList(key);
+        // add other movies of director
+        dirMovies[key] = directorObj[key];
+        dirMovies[key].forEach(function(movie) {
+            let movieItem = document.createElement("tr");
+            movieItem.setAttribute("id", movie);
+            if (typeof movie !== "undefined" && movie !== null)
+            {
+                document.getElementById(key).appendChild(movieItem);
+                browser.storage.sync.get(movie, gotMovie);
+            }
         });
+    }
+    else
+    {
+        dirMovies[directorName] = [];
+        if (secondDirector !== "")
+            dirMovies[secondDirector] = [];
     }
     // periodically check if rating changed
     setInterval(updateRating, 1000);
@@ -99,23 +148,16 @@ function gotDir(directorObj) {
 function gotMovie(movieObj) {
     if (Object.keys(movieObj).length === 1)
     {
-        var curId = Object.keys(movieObj)[0];
-        var movie = movieObj[curId];
+        let curId = Object.keys(movieObj)[0];
+        let movie = movieObj[curId];
         if (typeof movie !== "undefined" && typeof movie[0] !== "undefined" && typeof movie[1] !== "undefined")
         {
             if (curId === id)
-            {
                 storedRating = movie[1];
-                rated = true;
-            }
             else
             {
-                if (dirDiv.children.length > 1)
-                    dirDiv.innerHTML += ", ";
-                var movieLink = document.createElement("a");
-                movieLink.setAttribute("href", "/title/" + curId);
-                movieLink.innerHTML = movie[0] + " (" + movie[1]+ ")";
-                dirDiv.appendChild(movieLink);
+                let movieLink = "<a href='/title/" + curId + "'>" + movie[0] + " (" + movie[1]+ ")";
+                document.getElementById(curId).innerHTML = "<td>" + movieLink + "</td>";
             }
         }
     }
@@ -128,5 +170,4 @@ function onErr(val) {
 
 function onSet(val) {
     console.log("STORED");
-    console.log(val);
 }
