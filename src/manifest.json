@@ -15,11 +15,20 @@
         {
             "matches": ["https://www.imdb.com/user/*/ratings*"],
             "js": ["export.js"]
+        },
+        {
+            "matches": ["https://www.imdb.com/mymdb"],
+            "js": ["userPage.js"]
+        },
+	{
+            "matches": ["https://www.imdb.com/*"],
+            "js": ["mainPage.js"]
         }
     ],
     "permissions": [
       "https://www.imdb.com/title/*",
       "https://www.imdb.com/user/*",
+      "https://www.imdb.com/mymdb",
       "storage"
     ],
     "applications": {

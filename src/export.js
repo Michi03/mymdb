@@ -1,5 +1,7 @@
 var movieCount = 0;
+var dirCount = 0;
 var progress = 0;
+var directors = [];
 
 function getRatings() {
     let xhttp = new XMLHttpRequest();
@@ -13,9 +15,12 @@ function getRatings() {
 }
 
 function parseRatings(dataString) {
+    // add Username to store
+    let store = {};
+    store["username"] = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
+    browser.storage.sync.set(store);
     let lines = dataString.split(/\r\n|\n/);
     movieCount = lines.length - 2;
-    let directors = [];
     let updateDiv = document.createElement("div");
     updateDiv.style = "width:30%;z-index:10;position:absolute;left:35%;top:35%;background-color:rgba(255,255,255,1);box-shadow:2px 2px 4px grey;padding:1em;";
     updateDiv.innerHTML = "<h1>Synching Ratings</h1><p id='progress'></p>";
@@ -76,7 +81,6 @@ function parseRatings(dataString) {
         }
     }
     let items = Object.keys(directors);
-    progress = items.length;
     items.forEach(function(dir) {
         let store = {};
         store[dir] = directors[dir];
@@ -84,11 +88,30 @@ function parseRatings(dataString) {
     });
 }
 
+function updateDirs() {
+    let items = Object.keys(directors);
+    items.forEach(function(dir) {
+        let store = {};
+        store[dir] = directors[dir];
+        browser.storage.sync.set(store,set);
+    });
+}
+
 function set() {
-    progress++;
-    document.querySelector("#progress").innerHTML = progress + " / " + movieCount;
-    if (progress >= movieCount)
-        document.querySelector("#progress").innerHTML = "Done";
+    if (progress >= movieCount - 1)
+    {
+        if (dirCount === 0)
+            updateDirs();
+        if (dirCount < directors.length - 1)
+            document.querySelector("#progress").innerHTML = "Wait until directors are updated";
+        else
+            document.querySelector("#progress").innerHTML = "Done";
+    }
+    else
+    {
+        progress++;
+        document.querySelector("#progress").innerHTML = progress + " / " + movieCount;  
+    }
 }
 
 let btn = document.createElement("a");
