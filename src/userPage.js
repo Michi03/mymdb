@@ -10,8 +10,8 @@ container.innerHTML = '<table id="dirList"></table>';
 document.body.appendChild(container);
 const list = document.querySelector("#dirList");
 browser.storage.sync.get("username", gotUsername);
-browser.storage.sync.get(null, gotMovies);
 document.querySelector("#search").addEventListener("change", filter, false);
+reset();
 
 function gotUsername(data){
     // change heading and title if username is known
@@ -98,5 +98,16 @@ function filter() {
             }
         }
     }
+    let rstBtn = document.createElement("button");
+    rstBtn.setAttribute("id", "resetBtn");
+    rstBtn.innerHTML = "Reset Filter";
     list.innerHTML = result;
+    list.appendChild(rstBtn);
+    rstBtn.addEventListener("click", reset);
+}
+
+function reset() {
+    browser.storage.sync.get(null, gotMovies);
+    document.querySelector("#search").value = "";
+    list.removeChild(document.querySelector("#resetBtn"));
 }

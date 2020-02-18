@@ -2,6 +2,7 @@ var movieCount = 0;
 var dirCount = 0;
 var progress = 0;
 var directors = [];
+var updateDiv = {};
 
 function getRatings() {
     let xhttp = new XMLHttpRequest();
@@ -21,7 +22,7 @@ function parseRatings(dataString) {
     browser.storage.sync.set(store);
     let lines = dataString.split(/\r\n|\n/);
     movieCount = lines.length - 2;
-    let updateDiv = document.createElement("div");
+    updateDiv = document.createElement("div");
     updateDiv.style = "width:30%;z-index:10;position:absolute;left:35%;top:35%;background-color:rgba(255,255,255,1);box-shadow:2px 2px 4px grey;padding:1em;";
     updateDiv.innerHTML = "<h1>Synching Ratings</h1><p id='progress'></p>";
     document.body.appendChild(updateDiv);
@@ -80,12 +81,6 @@ function parseRatings(dataString) {
                 directors[curDir].push(movie.id);
         }
     }
-    let items = Object.keys(directors);
-    items.forEach(function(dir) {
-        let store = {};
-        store[dir] = directors[dir];
-        browser.storage.sync.set(store);
-    });
 }
 
 function updateDirs() {
@@ -93,8 +88,13 @@ function updateDirs() {
     items.forEach(function(dir) {
         let store = {};
         store[dir] = directors[dir];
+	    console.log(dirCount++);
         browser.storage.sync.set(store,set);
     });
+}
+
+function removeDiv() {
+    document.body.removeChild(updateDiv);
 }
 
 function set() {
@@ -105,12 +105,15 @@ function set() {
         if (dirCount < directors.length - 1)
             document.querySelector("#progress").innerHTML = "Wait until directors are updated";
         else
+        {
             document.querySelector("#progress").innerHTML = "Done";
+            document.body.addEventListener("click", removeDiv, false);
+        }
     }
     else
     {
         progress++;
-        document.querySelector("#progress").innerHTML = progress + " / " + movieCount;  
+        document.querySelector("#progress").innerHTML = progress + " / " + movieCount;
     }
 }
 
