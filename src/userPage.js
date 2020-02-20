@@ -1,8 +1,8 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25%1em;border-radius:10px;}#headerText{color:#E4CD17;}#search{border-radius:20px;width:10%;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25%1em;border-radius:10px;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
-header.innerHTML = '<a href="https://imdb.com/"><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div><input type="text" id="search" placeholder="Filter Directors">';
+header.innerHTML = '<a href="https://imdb.com/"><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
 document.body.appendChild(header);
 let container = document.createElement("div");
 container.classList.add("container");
@@ -64,13 +64,18 @@ function gotMovies(data) {
 function filter() {
     let pattern = document.querySelector("#search").value;
     if (pattern.length < 1)
-        return;
+        if (document.querySelector("#resetBtn") !== null)
+            reset();
+        else
+            return;
     let deleteRow = [];
     for (let n = 0; n < list.children.length; n++)
     {
         let row = list.children[n];
         let match = 0;
-        let str = row.children[0].innerText;
+        if (typeof row.children[0] === "undefined")
+            continue;
+	let str = row.children[0].innerText;
         for (let i = 0; i < str.length; i++)
         {
             if (str[i].toLowerCase() === pattern[match].toLowerCase())
@@ -89,10 +94,12 @@ function filter() {
 }
 
 function addReset() {
+    if (document.querySelector("#resetBtn") !== null)
+        return;
     let rstBtn = document.createElement("button");
     rstBtn.setAttribute("id", "resetBtn");
     rstBtn.innerHTML = "Reset Filter";
-    list.appendChild(rstBtn);
+    list.insertBefore(rstBtn, list.firstChild);
     rstBtn.addEventListener("click", reset);
 }
 
@@ -146,11 +153,13 @@ function filterStars(e) {
 }
 
 function reset() {
+    let btn = document.querySelector("#resetBtn");
+    if (btn !== null)
+        list.removeChild(btn);
     list.innerHTML = "";
     browser.storage.sync.get(null, gotMovies);
     document.querySelector("#search").value = "";
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
         stars[i].innerHTML = "&#9734;";
-
 }
