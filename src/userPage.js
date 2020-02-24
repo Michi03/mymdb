@@ -1,8 +1,8 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25%1em;border-radius:10px;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
-header.innerHTML = '<a href="https://imdb.com/"><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
+header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><a href="/"><h2 id="imdbLink" class="inline">IMDB</h2></div><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
 document.body.appendChild(header);
 let container = document.createElement("div");
 container.classList.add("container");
@@ -11,6 +11,7 @@ document.body.appendChild(container);
 const list = document.querySelector("#dirList");
 browser.storage.sync.get("username", gotUsername);
 document.querySelector("#search").addEventListener("change", filter, false);
+document.querySelector("#mymdbIcon").addEventListener("click", openLink, false);
 reset();
 addStars();
 
@@ -53,7 +54,7 @@ function gotMovies(data) {
                 list.appendChild(row);
                 dir["movies"].forEach(function(movie) {
                     let item = document.createElement("td");
-                    item.innerHTML += " <a href='https://www.imdb.com/title/" + movie + "'>" + movies[movie].title + " (" + movies[movie].rating + ")</a>";
+                    item.innerHTML += " <a href='https://www.imdb.com/title/" + movie + "' target='_blank'>" + movies[movie].title + " (" + movies[movie].rating + ")</a>";
                     row.appendChild(item);
                 });
             }
@@ -162,4 +163,8 @@ function reset() {
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
         stars[i].innerHTML = "&#9734;";
+}
+
+function openLink() {
+    window.open('https://github.com/Michi03/mymdb');
 }
