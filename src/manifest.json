@@ -12,16 +12,16 @@
         {
             "matches": ["https://m.imdb.com/title/*"],
             "js": ["mymdb_mobile.js"]
-        },
-        {
-            "matches": ["https://*.imdb.com/user/*/ratings*"],
-            "js": ["export.js"]
         }
     ],
+    "background": {
+        "scripts": ["ratings.js"]
+    },
     "permissions": [
       "https://*.imdb.com/title/*",
       "https://*.imdb.com/user/*",
-      "storage"
+      "storage",
+      "webRequest"
     ],
     "applications": {
       "gecko": {
@@ -29,6 +29,6 @@
       }
     },
     "options_ui": {
-      "page": "ratings.html"
+      "page": "settings.html"
     }
 }
