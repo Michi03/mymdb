@@ -1,9 +1,10 @@
 var directorName = "";
+var hrAdded = false;
 var secondDirector = "";
 var title = "";
 var id = "";
 var rating = "0";
-var storedRating = "0";
+var storedRating = "Rate";
 var dirDiv = {};
 var dirMovies = {};
 var addedMovies = [];
@@ -13,16 +14,16 @@ var addedMovies = [];
         return;
     window.hasRun = true;
     // get director(s)
-    let dirList = document.querySelector(".credit_summary_item").children;
-    directorName = dirList[1].innerHTML;
+    let dirList = removeSpaces(document.querySelector("h3.inline-block").parentNode.children[1].innerHTML).split(',');
+    directorName = dirList[0];
     dirDiv = document.createElement("div");
     dirDiv.id = "mymdb";
-    dirDiv.setAttribute("class", "credit_summary_item");
-    document.querySelector(".plot_summary").appendChild(dirDiv);
+    dirDiv.setAttribute("class", "btn-full");
+    document.querySelector("#cast-and-crew").appendChild(dirDiv);
     browser.storage.sync.get(directorName, gotDir);
-    if (dirList.length > 2)
+    if (dirList.length > 1)
     {
-        secondDirector = dirList[2].innerHTML;
+        secondDirector = dirList[1];
         browser.storage.sync.get(secondDirector, gotDir);
     }
 })();
@@ -31,6 +32,10 @@ function appendList(name) {
     let divContent = document.createElement("h4");
     divContent.classList.add("inline");
     divContent.innerHTML = 'Other movies by ' + name + ':';
+    if (!hrAdded) {
+        document.querySelector("#cast-and-crew").insertBefore((document.createElement("hr")),dirDiv);
+        hrAdded = true;
+    }
     dirDiv.appendChild(divContent);
     let movieList = document.createElement("ul");
     movieList.setAttribute("id", name);
@@ -38,12 +43,12 @@ function appendList(name) {
 }
 
 function updateRating() {
-    rating = document.querySelector(".star-rating").getAttribute("value");
-    if (storedRating !== rating && document.querySelector(".imdb-header__account-toggle--logged-in") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
+    rating = removeSpaces(document.querySelector("#logged-in-user-rating").firstChild.data);
+    if (storedRating !== rating && document.querySelector("#nblogout") !== null)
     {
-        console.log("RATING CHANGED");
+        console.log("RATING CHANGED:",storedRating,rating);
         storedRating = rating;
-        if (rating === "0" && typeof dirMovies[directorName] !== "undefined")
+        if (rating === "Rate" && typeof dirMovies[directorName] !== "undefined")
         {
             // delete id from director movie array
             dirMovies[directorName].forEach(function(movie,idx) {
@@ -68,7 +73,7 @@ function updateRating() {
                 });
             }
         }
-        else if (rating !== "0")
+        else if (rating !== "Rate")
         {
             let store = {};
             store[id] = [title,rating];
@@ -107,27 +112,34 @@ function updateRating() {
                 }
             }
         }
+        else
+        {
+            print(dirName)
+        }
     }
 }
 
 function gotDir(directorObj) {
     // get current movie
     id = window.location.href.split('/')[4];
-    title = document.querySelector("h1").firstChild.data;
-    if (document.querySelector(".star-rating") === null)
-        rating = "0";
-    else
-        rating = document.querySelector(".star-rating").getAttribute("value")
+    title = removeSpaces(document.querySelector("h1").firstChild.data);
+    if (document.querySelector("#logged-in-user-rating") !== null)
+    {
+        if (document.querySelector("#logged-in-user-rating").firstChild.data === "Rate")
+            rating = "0";
+        else
+            rating = removeSpaces(document.querySelector("#logged-in-user-rating").firstChild.data);
+    }
     let key = "";
     if (typeof directorObj !== "undefined" && Object.keys(directorObj).length > 0)
     {
         key = Object.keys(directorObj)[0];
-        if (directorObj[key].length > 1 || directorObj[key][0] !== id)
+        if (directorObj[key].length > 1 || (directorObj[key][0] !== id && directorObj[key][0] != null))
             appendList(key);
         // add other movies of director
         dirMovies[key] = directorObj[key];
         dirMovies[key].forEach(function(movie) {
-            if (typeof movie !== "undefined" && movie !== null)
+            if (typeof movie !== "undefined" && movie !== null && typeof document.getElementById(key)  !== 'undefined' && document.getElementById(key) !== null)
                 browser.storage.sync.get(movie, gotMovie);
         });
     }
@@ -166,6 +178,7 @@ function gotMovie(movieObj) {
     }
 }
 
+
 function onErr(val) {
     console.log("ERROR");
     console.log(val);
@@ -173,4 +186,21 @@ function onErr(val) {
 
 function onSet(val) {
     console.log("STORED");
+}
+
+function removeSpaces(string) {
+    if (typeof string === 'undefined')
+        return;
+    var res = "";
+    var i = 0;
+    while (string[i] === ' ' || string[i] === '\n')
+        i++;
+    for (i; i < string.length;i++)
+    {
+        if (string[i] !== ' ' && string[i] !== '\n' || (string[i] === ' ' && (i+1 < string.length && string[i+1] !== ' ')))
+            res += string[i];
+        else if ((string[i] === ' ' || string[i] === '\n') && i+1 === string.length)
+            return res;
+    }
+    return res;
 }

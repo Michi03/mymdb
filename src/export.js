@@ -11,12 +11,14 @@ function getRatings() {
             parseRatings(this.responseText);
         }
     };
-    xhttp.open("GET", "https://www.imdb.com/user/" + window.location.pathname.split('/')[2] + "/ratings/export", true);
+    let url =  "https://" + window.location.host + window.location.pathname + "/export";
+    xhttp.open("GET", url, true);
     xhttp.send();
 }
 
 function parseRatings(dataString) {
     // add Username to store
+	console.log(dataString);
     let store = {};
     store["username"] = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
     browser.storage.sync.set(store);
@@ -31,6 +33,8 @@ function parseRatings(dataString) {
         let multDirs = false;
         let fields = lines[i].split(',');
         let title = fields[3]
+        if (typeof title === "undefined")
+            continue;
         // handle decimal points in title
         if (title[0] === "\"")
         {
@@ -95,6 +99,7 @@ function updateDirs() {
 
 function removeDiv() {
     document.body.removeChild(updateDiv);
+    document.body.removeEventListener("click", removeDiv);
 }
 
 function set() {
@@ -117,9 +122,32 @@ function set() {
     }
 }
 
-let btn = document.createElement("a");
-btn.setAttribute("class", "pop-up-menu-list-item-link");
-btn.setAttribute("id", "syncBtn");
-btn.innerHTML = "Sync Mymdb";
-document.querySelector(".pop-up-menu-list-items").appendChild(btn);
+let btn = {}
+if (document.querySelector(".pop-up-menu-list-items") !== null) {
+    btn = document.createElement("a");
+    btn.setAttribute("class", "pop-up-menu-list-item-link");
+    btn.setAttribute("id", "syncBtn");
+    btn.innerHTML = "Sync Mymdb";
+    document.querySelector(".pop-up-menu-list-items").appendChild(btn);
+}
+else { 
+    // mobile version
+    btn = document.createElement("div");
+    btn.setAttribute("class", "pop-up-menu-list-item-link");
+    btn.setAttribute("id", "syncBtn");
+    btn.innerHTML = "<b>Sync Mymdb</b>";
+    document.querySelector(".nav-left").appendChild(btn);
+    document.querySelector(".nav-left").style["display"] = "block ruby";
+    btn.innerHTML = "<b>Sync Mymdb</b>";
+    btn.style["background-color"] = "#EDCA24";
+    btn.style["padding"] = "0.5em";
+    btn.style["margin"] = "1em";
+    btn.style["width"] = "8em";
+    btn.style["font-family"] = "Arial, helvetica, sans-serif";
+    btn.style["text-align"] = "center";
+    btn.style["border-radius"] = "5px";
+    btn.style["cursor"] = "pointer";
+    if (document.querySelector(".lister-header") !== null && document.querySelector(".lister-header").children[0] !== null)
+        document.querySelector(".lister-header").children[0].removeAttribute("href");
+}
 document.querySelector("#syncBtn").addEventListener("click", getRatings, false);

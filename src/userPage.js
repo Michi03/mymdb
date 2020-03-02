@@ -1,8 +1,8 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}tr{display:block;width:90%;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
-header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><a href="/"><h2 id="imdbLink" class="inline">IMDB</h2></div><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
+header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><a href="/"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
 document.body.appendChild(header);
 let container = document.createElement("div");
 container.classList.add("container");
@@ -28,7 +28,7 @@ function gotUsername(data){
 function gotMovies(data) {
     if (typeof data !== "object" || data === null || Object.keys(data).length < 1)
     {
-        list.innerHTML = "<tr><td><h2>No movies rated, yet. Watch my <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>YouTube guide</a> to learn how to use the addons :)";
+        list.innerHTML = "<tr><td><h2>No movies rated, yet. Watch my <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>YouTube guide</a> to learn how to use the addons :)</h2></td></tr>";
     }
     else
     {
@@ -47,15 +47,23 @@ function gotMovies(data) {
             }
         });
         directors.forEach(function(dir) {
-            if (typeof dir === "object" && dir['movies'].length > 0 && dir['name'].length > 0)
+            // filter null elements
+            let hasMovie = false;
+            dir['movies'].forEach(function(movie) {
+                if (typeof movie !== 'undefined' && movie !== null)
+                    hasMovie = true;})
+            if (typeof dir === "object" && hasMovie && dir['name'].length > 0)
             {
                 let row = document.createElement("tr");
                 row.innerHTML = "<td>" + dir["name"] + "</td><td></td>";
                 list.appendChild(row);
                 dir["movies"].forEach(function(movie) {
-                    let item = document.createElement("td");
-                    item.innerHTML += " <a href='https://www.imdb.com/title/" + movie + "' target='_blank'>" + movies[movie].title + " (" + movies[movie].rating + ")</a>";
-                    row.appendChild(item);
+                    if (typeof movies[movie] !== 'undefined')
+                    {
+                        let item = document.createElement("td");
+                        item.innerHTML += " <a href='/title/" + movie + "' target='_blank'>" + movies[movie].title + " (" + movies[movie].rating + ")</a>";
+                        row.appendChild(item);
+                    }
                 });
             }
         });

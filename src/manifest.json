@@ -12,23 +12,27 @@
             "matches": ["https://www.imdb.com/title/*"],
             "js": ["mymdb.js"]
         },
+	        {
+            "matches": ["https://m.imdb.com/title/*"],
+            "js": ["mymdb_mobile.js"]
+        },
         {
-            "matches": ["https://www.imdb.com/user/*/ratings*"],
+            "matches": ["https://*.imdb.com/user/*/ratings*"],
             "js": ["export.js"]
         },
         {
-            "matches": ["https://www.imdb.com/mymdb"],
+            "matches": ["https://*.imdb.com/mymdb"],
             "js": ["userPage.js"]
         },
 	{
-            "matches": ["https://www.imdb.com/*"],
+            "matches": ["https://*.imdb.com/*"],
             "js": ["mainPage.js"]
         }
     ],
     "permissions": [
-      "https://www.imdb.com/title/*",
-      "https://www.imdb.com/user/*",
-      "https://www.imdb.com/mymdb",
+      "https://*.imdb.com/title/*",
+      "https://*.imdb.com/user/*",
+      "https://*.imdb.com/mymdb",
       "storage"
     ],
     "applications": {
