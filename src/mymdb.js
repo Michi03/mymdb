@@ -34,6 +34,7 @@ function appendList(name) {
     dirDiv.appendChild(divContent);
     let movieList = document.createElement("ul");
     movieList.setAttribute("id", name);
+    movieList.setAttribute("style", "margin: 0.5em");
     dirDiv.appendChild(movieList);
 }
 
@@ -122,7 +123,12 @@ function gotDir(directorObj) {
     if (typeof directorObj !== "undefined" && Object.keys(directorObj).length > 0)
     {
         key = Object.keys(directorObj)[0];
-        if (directorObj[key].length > 1 || directorObj[key][0] !== id)
+        let hasMovie = false;
+        directorObj[key].forEach(function(movie) {
+            if (typeof movie !== 'undefined' && movie !== null)
+                hasMovie = true;
+        });
+        if (hasMovie && (directorObj[key].length > 1 || directorObj[key][0] !== id))
             appendList(key);
         // add other movies of director
         dirMovies[key] = directorObj[key];

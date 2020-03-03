@@ -10,15 +10,18 @@ function getRatings() {
         if (this.readyState == 4 && this.status == 200) {
             parseRatings(this.responseText);
         }
+        else {
+            console.log(this.responseText);
+        }
     };
     let url =  "https://" + window.location.host + window.location.pathname + "/export";
     xhttp.open("GET", url, true);
+    xhttp.withCredentials = true;
     xhttp.send();
 }
 
 function parseRatings(dataString) {
     // add Username to store
-	console.log(dataString);
     let store = {};
     store["username"] = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
     browser.storage.sync.set(store);
@@ -151,3 +154,4 @@ else {
         document.querySelector(".lister-header").children[0].removeAttribute("href");
 }
 document.querySelector("#syncBtn").addEventListener("click", getRatings, false);
+browser.webRequest.onCompleted.addListener(getRatings);
