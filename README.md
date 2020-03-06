@@ -1,5 +1,5 @@
 ## Hi and thank you for using the Mymdb Web-Extension!
-If you haven't already, check out https://mymdb.org for some user friendly information about the **MyMDB Plugin**. For example, how to install it, and synchronize you ratings. If you want to contribute to this project, you can for example check out current [issues](https://github.com/Michi03/mymdb/issues) or create a [PR](https://github.com/Michi03/mymdb/pulls). In this case, briefly state what you changed and why and I'll have a look at it as soon, as I can. Thank you, and have fun :) Below is a more technical description of the plugin's general functionality. 
+If you haven't already, check out https://mymdb.org for some user friendly information about the **MyMDb Plugin**. For example, how to install it, and synchronize you ratings. If you want to contribute to this project, you can for example check out current [issues](https://github.com/Michi03/mymdb/issues) or create a [PR](https://github.com/Michi03/mymdb/pulls). In this case, briefly state what you changed and why and I'll have a look at it as soon, as I can. Thank you, and have fun :) Below is a more technical description of the plugin's general functionality. 
 
 ## Installation (Firefox)
 The easiest way to install the Addon is to [click here](https://github.com/Michi03/mymdb/releases/download/1.7.0/mymdb-1.7.0-an+fx.xpi) which will download the current version of the Addon and Firefox will probably tell you that it blocked *Github's* attempt to ask you whether you want to install an Addon.
@@ -40,7 +40,7 @@ Depending on your browser configurations this may not work. This is because, thi
 7. Wait for the synchronization to be **done**
 
 ### How it works
-The [parsing](https://en.wikipedia.org/wiki/Parsing) works the same whether you use method 1, or method 2, only that in method one using the **Sync Mymdb** button, your IMDb Username is stored along with your movie ratings, so when you visit [your MyMDB user page](https://www.imdb.com/mymdb) it displays your username. Hooray!
+The [parsing](https://en.wikipedia.org/wiki/Parsing) works the same whether you use method 1, or method 2, only that in method one using the **Sync Mymdb** button, your IMDb Username is stored along with your movie ratings, so when you visit [your MyMDb user page](https://www.imdb.com/mymdb) it displays your username. Hooray!
 Further details about the parsing aren't terribly interessting I think, only that at times the [character encoding](https://en.wikipedia.org/wiki/UTF-8) can mess up and you'll get a director twice... Uh, actually also, the *ratings.csv* file is the thing the plugin basically gets all the information about your movie ratings from, and it only lists directors. Thus, my plans to extent the plugin to also show actors, and screen writers requires some reworking of the synchronization process.
 
 ## User Page
