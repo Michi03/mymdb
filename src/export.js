@@ -3,15 +3,25 @@ var dirCount = 0;
 var progress = 0;
 var directors = [];
 var updateDiv = {};
+var success = false;
 
 function getRatings() {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
+            success = true;
             parseRatings(this.responseText);
+            removeAlert(document.body);
         }
-        else {
-            console.log(this.responseText);
+        else if (this.status >= 300) {
+            if (document.querySelector("#alertDiv") !== null || success)
+                return;
+            let alertDiv = document.createElement('div');
+            alertDiv.setAttribute('id','alertDiv');
+            alertDiv.style = "width:80%;position:fixed;top:40%;left:10%;z-index:10;padding:1em;background-color:#FFF;box-shadow: 2px 2px 4px grey";
+            alertDiv.innerHTML = "<h2>Oops, somebody's careful</h2><p>This action does not work due to your Firefox settings! Please check out <a style='color:blue' href='https://mymdb.org/#synchronize_without_cookies' target='_blank'>this alternate method</a> of synchronizing your ratings.</p>";
+            document.body.addEventListener('click',removeAlert,false);
+            document.body.appendChild(alertDiv);
         }
     };
     let url =  "https://" + window.location.host + window.location.pathname + "/export";
@@ -124,6 +134,10 @@ function set() {
         document.querySelector("#progress").innerHTML = progress + " / " + movieCount;
     }
 }
+function removeAlert(e){
+    if (e.target.tagName !== 'A')
+        document.body.removeChild(document.querySelector('#alertDiv'));
+}
 
 let btn = {}
 if (document.querySelector(".pop-up-menu-list-items") !== null) {
@@ -154,7 +168,6 @@ else {
         document.querySelector(".lister-header").children[0].removeAttribute("href");
 }
 document.querySelector("#syncBtn").addEventListener("click", getRatings, false);
-browser.webRequest.onCompleted.addListener(getRatings);
 
 
 //    Copyright (c) 2019-2020
