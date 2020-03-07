@@ -1,17 +1,14 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}tr{display:block;width:90%;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{padding:.25em;display:block;}.dir{margin:0 1.5em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
-header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
+header.innerHTML = '<div><a href="https://mymdb.org/" target="_blank"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings" target="_blank"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
 document.body.appendChild(header);
-let container = document.createElement("div");
-container.classList.add("container");
-container.innerHTML = '<table id="dirList"></table>';
-document.body.appendChild(container);
-const list = document.querySelector("#dirList");
+const list = document.createElement("div");
+list.classList.add("container");
+document.body.appendChild(list);
 browser.storage.sync.get("username", gotUsername);
 document.querySelector("#search").addEventListener("change", filter, false);
-document.querySelector("#mymdbIcon").addEventListener("click", openLink, false);
 reset();
 addStars();
 
@@ -28,7 +25,7 @@ function gotUsername(data){
 function gotMovies(data) {
     if (typeof data !== "object" || data === null || Object.keys(data).length < 1)
     {
-        list.innerHTML = "<tr><td><h2>No movies rated, yet. Watch my <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>YouTube guide</a> to learn how to use the addons :)</h2></td></tr>";
+        list.innerHTML = "<h2>No movies rated, yet. Watch my <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>YouTube guide</a> to learn how to use the addons :)</h2>";
     }
     else
     {
@@ -54,17 +51,21 @@ function gotMovies(data) {
                     hasMovie = true;})
             if (typeof dir === "object" && hasMovie && dir['name'].length > 0)
             {
-                let row = document.createElement("tr");
-                row.innerHTML = "<td>" + dir["name"] + "</td><td></td>";
-                list.appendChild(row);
+                let dirItem = document.createElement("div");
+                dirItem.classList.add('dir');
+                dirItem.innerHTML = "<h3>" + dir["name"] + "</h3>";
+                list.appendChild(dirItem);
+                let dirList = document.createElement('ul');
+                dirItem.appendChild(dirList);
                 dir["movies"].forEach(function(movie) {
                     if (typeof movies[movie] !== 'undefined')
                     {
-                        let item = document.createElement("td");
+                        let item = document.createElement("li");
                         item.innerHTML += " <a href='/title/" + movie + "' target='_blank'>" + movies[movie].title + " (" + movies[movie].rating + ")</a>";
-                        row.appendChild(item);
+                        dirList.appendChild(item);
                     }
                 });
+                dirItem.parentElement.appendChild(document.createElement('hr'));
             }
         });
     }
@@ -74,7 +75,10 @@ function filter() {
     let pattern = document.querySelector("#search").value;
     if (pattern.length < 1)
         if (document.querySelector("#resetBtn") !== null)
+        {
             reset();
+            return;
+        }
         else
             return;
     let deleteRow = [];
@@ -95,7 +99,10 @@ function filter() {
                 break;
         }
         if (match < pattern.length)
+        {
             deleteRow.push(row);
+            deleteRow.push(row.nextSibling);
+        }
     }
     for (let i = 0; i < deleteRow.length; i++)
         list.removeChild(deleteRow[i]);
@@ -108,6 +115,7 @@ function addReset() {
     let rstBtn = document.createElement("button");
     rstBtn.setAttribute("id", "resetBtn");
     rstBtn.innerHTML = "Reset Filter";
+    list.insertBefore(document.createElement('hr'), list.firstChild);
     list.insertBefore(rstBtn, list.firstChild);
     rstBtn.addEventListener("click", reset);
 }
@@ -133,11 +141,14 @@ function filterStars(e) {
     for (let n = 0; n < list.children.length; n++)
     {
         let row = list.children[n];
+        if (row.tagName === 'HR' || row.tagName === 'BUTTON')
+            continue;
         let deleteItem = [];
-        for (let j = 1; j < row.children.length; j++)
+        let movieList = row.children[1].children
+        for (let j = 0; j < movieList.length; j++)
         {
             let match = 0;
-            let str = row.children[j].innerText;
+            let str = movieList[j].innerText;
             for (let i = 0; i < str.length; i++)
             {
                 if (str[i] === pattern[match])
@@ -148,33 +159,32 @@ function filterStars(e) {
                     break;
             }
             if (match < pattern.length)
-                deleteItem.push(row.children[j]);
+                deleteItem.push(movieList[j]);
         }
-        if (deleteItem.length >= row.children.length - 1)
+        if (deleteItem.length >= movieList.length)
+        {
             deleteRow.push(row);
+            deleteRow.push(row.nextSibling);
+        }
         else
             for (let j = 0; j < deleteItem.length; j++)
-                row.removeChild(deleteItem[j]);
+                deleteItem[j].parentElement.removeChild(deleteItem[j]);
     }
     for (let i = 0; i < deleteRow.length; i++)
-        list.removeChild(deleteRow[i]);
+        deleteRow[i].parentElement.removeChild(deleteRow[i]);
     addReset();
 }
 
 function reset() {
     let btn = document.querySelector("#resetBtn");
     if (btn !== null)
-        list.removeChild(btn);
+        btn.parentElement.removeChild(btn);
     list.innerHTML = "";
     browser.storage.sync.get(null, gotMovies);
     document.querySelector("#search").value = "";
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
         stars[i].innerHTML = "&#9734;";
-}
-
-function openLink() {
-    window.open('https://github.com/Michi03/mymdb');
 }
 
 
