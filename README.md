@@ -55,3 +55,19 @@ What I find funny about the user page is that it actually works entirely based o
 
 ## Accessibility
 Right now, I only distribute the plugin via Gihtub. I may add it to the official [Firefox addons store](https://addons.mozilla.org/en-US/firefox/) soon, but until now I just didn't see the point in it, as I didn't feel like the plugin was really done, and still required frequent updates. The main problem with this is, that between required updates I may be too busy to take care of it, and then people would be stuck with a broken addon for a long period of time. So, we'll see. I might come around and add it to the addon store eventually, but for now you can feel very special, if you heard of it and use it ;)
+
+
+    Copyright (c) 2019-2020
+    This file is part of The MyMDb Firefox Web-Extension.
+
+    The MyMDb Firefox Web-Extension is free software: you can redistribute
+    it and/or modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation, either version 3 of the
+    License, or any later version.
+
+    The MyMDb Firefox Web-Extension is distributed in the hope that it
+    will be useful, but WITHOUT ANY WARRANTY; without even the implied
+    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+    the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License

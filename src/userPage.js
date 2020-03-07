@@ -1,8 +1,8 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDB User Page</title><link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Michi03/mymdb/master/src/icon.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}tr{display:block;width:90%;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}td{padding:1em;}tr{display:block;width:90%;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
-header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDB</h2></div></a><a href="/list/ratings"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDB Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
+header.innerHTML = '<div><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
 document.body.appendChild(header);
 let container = document.createElement("div");
 container.classList.add("container");
@@ -20,7 +20,7 @@ function gotUsername(data){
     let uName = data["username"];
     if (typeof uName !== "undefined" && uName.length > 0)
     {
-        document.title = "MyMDB - " + uName;
+        document.title = "MyMDb - " + uName;
         document.querySelector("#headerText").innerHTML = uName + "'s Ratings";
     }
 }
@@ -176,3 +176,20 @@ function reset() {
 function openLink() {
     window.open('https://github.com/Michi03/mymdb');
 }
+
+
+//    Copyright (c) 2019-2020
+//    This file is part of The MyMDb Firefox Web-Extension.
+//
+//    The MyMDb Firefox Web-Extension is free software: you can redistribute
+//    it and/or modify it under the terms of the GNU General Public License
+//    as published by the Free Software Foundation, either version 3 of the
+//    License, or any later version.
+//
+//    The MyMDb Firefox Web-Extension is distributed in the hope that it
+//    will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+//    the GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+

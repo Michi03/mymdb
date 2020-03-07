@@ -3,7 +3,7 @@
     "name": "mymdb",
     "version": "1.7.1",
     "description": "When checking the IMDB page of a specific movie, this Add-On adds links to movies you previously rated on IMDB by the same director to the page.",
-    "homepage_url": "https://github.com/Michi03/mymdb",
+    "homepage_url": "https://mymdb.org",
     "icons": {
 	"48": "icon.png"
     },
