@@ -1,5 +1,5 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{padding:.25em;display:block;}.dir{margin:0 1.5em;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{padding:.25em;display:block;}.dir{margin:0 1.5em;cursor:pointer;}.inline{display:inline;}.container{display.flex;justify-content:center;width:75%;margin-left:12.5%;background-color:#FFF;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}</style>';
 document.body.removeChild(document.body.children[0]);
 let header = document.createElement("header");
 header.innerHTML = '<div><a href="https://mymdb.org/" target="_blank"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings" target="_blank"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div></div>';
@@ -52,10 +52,12 @@ function gotMovies(data) {
             if (typeof dir === "object" && hasMovie && dir['name'].length > 0)
             {
                 let dirItem = document.createElement("div");
+                dirItem.addEventListener("click", toggleHidden, false);
                 dirItem.classList.add('dir');
                 dirItem.innerHTML = "<h3>" + dir["name"] + "</h3>";
                 list.appendChild(dirItem);
                 let dirList = document.createElement('ul');
+                dirList.setAttribute('hidden',true);
                 dirItem.appendChild(dirList);
                 dir["movies"].forEach(function(movie) {
                     if (typeof movies[movie] !== 'undefined')
@@ -185,6 +187,14 @@ function reset() {
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
         stars[i].innerHTML = "&#9734;";
+}
+
+function toggleHidden(e) {
+    let hiddenElement = e.target;
+    while (hiddenElement.tagName !== 'DIV')
+        hiddenElement = hiddenElement.parentElement;
+    hiddenElement = hiddenElement.children[1];
+    hiddenElement.hidden = !hiddenElement.hidden;
 }
 
 
