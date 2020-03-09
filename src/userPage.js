@@ -1,8 +1,9 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}hr{margin:0;padding:0}header{background-color:#111;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{display:block;padding:.15em 0 0 .15em}h3{margin:0;padding:.5em .2em;}ul{margin:0;padding:0 0 .5em 1.5em;transition:max-height .2s;overflow:hidden;}.dir{cursor:pointer;transition:.4s;padding:1em;background-color:#fff;}.dir:hover{background-color:#F8FA7E;padding-left:2em}.inline{display:inline;}.active{padding-left:2em;}.container{width:75%;margin-left:12.5%;background-color:#FFF;}.appears{display:none;}.dropdown{width:200px;}#dropdown{position:absolute;z-index:5;}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;margin-top:35px}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#burgerMenu{cursor:pointer;padding:0 1em;}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}@media screen and (max-width: 870px){.disappears{display:none;}.appears{display:inline-block;}#headerText{margin-top:10px;}header{display:block;}}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}hr{margin:0;padding:0}header{background-color:#222222;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{display:block;padding:.15em 0 0 .15em}h3{margin:0;padding:.5em .2em;}ul{margin:0;padding:0 0 .5em 1.5em;transition:max-height .2s;overflow:hidden;}.dir{cursor:pointer;transition:.4s;padding:1em;background-color:#fff;}.dir:hover{background-color:#F8FA7E;padding-left:2em}.inline{display:inline;}.active{padding-left:2em;}.container{width:75%;margin-left:12.5%;background-color:#FFF;}.appears{display:none;}.dropdown{width:200px;transition: 0s;}div .dropdown{border-width:2px 0 0 0;border-style:solid;border-color:grey;}#respResetBtn{color:#fff;text-align:center;cursor:default;font-size:2em;width:40px;height:40px;}#dropdown{position:absolute;z-index:5;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;margin-top:35px;text-align:center;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#burgerMenu{cursor:pointer;padding:0 1em;}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}@media screen and (max-width: 870px){.disappears{display:none;}.appears{display:inline-block;}#headerText{margin-top:10px;}header{display:block;}.active{padding-left:1em;}#filterDiv{position:absolute;top:35%;background-color:#fff;left:5%;width:90%;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#btnDiv{display:none}}</style>';
+
 document.body.removeChild(document.body.children[0]);
 const header = document.createElement("header");
-header.innerHTML = '<div id="burgerMenu" class="appears"><img height=30px width=40px src="https://mymdb.org/imgs/burger.png" /><div id="dropdown" style="display:none;"><div class="dir dropdown" style="transition:0s;">Expand All</div></div></div><div class="disappears"><a href="https://mymdb.org/" target="_blank"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings" target="_blank"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div class="disappears"><input type="text" id="search" placeholder="Filter Directors"><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div><div id="btnDiv"></div></div>';
+header.innerHTML = '<div id="burgerMenu" class="appears"><img height=30px width=40px src="https://mymdb.org/imgs/burger.png" /><div id="dropdown" style="display:none;"><div class="dir dropdown" style="border-style:none;">Expand All</div><div class="dir dropdown">Filter Movies</div><a href="https://mymdb.org/" style="color:#1ce796;" target="_blank"><div class="dir dropdown"><b>MyMDb</b></div></a><a href="/list/ratings" style="color:#E4CD17;" target="_blank"><div class="dropdown dir"><b>IMDb</b></div></a></div></div><div class="disappears"><a href="https://mymdb.org/" target="_blank"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings" target="_blank"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div class="disappears"><input type="text" id="search" placeholder="Filter Directors"><div id="respResetBtn" class="appears">&#8634;</div><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div><div id="btnDiv"></div></div>';
 document.body.appendChild(header);
 const list = document.createElement("div");
 list.classList.add("container");
@@ -14,7 +15,7 @@ addStars();
 var expand = true;
 document.querySelector("#burgerMenu").addEventListener("click", openDropdown, false);
 document.querySelector("#dropdown").children[0].addEventListener("click", toggleExpanded, false);
-
+document.querySelector("#dropdown").children[1].addEventListener("click", toggleFilter, false);
 
 function gotUsername(data){
     // change heading and title if username is known
@@ -135,6 +136,8 @@ function addReset() {
     document.querySelector('#btnDiv').appendChild(rstBtn);
     rstBtn.classList.add('dir');
     rstBtn.addEventListener("click", reset);
+    document.querySelector("#respResetBtn").addEventListener("click", reset, false);
+    document.querySelector('#respResetBtn').style.cursor = 'pointer';
 }
 
 function addStars() {
@@ -147,8 +150,13 @@ function addStars() {
 }
 
 function filterStars(e) {
-    let rating = e.target.id;
     let stars = document.querySelector("#stars").children;
+    for (let i = 0; i < stars.length; i++)
+    {
+        stars[i].setAttribute("id",i+1);
+        stars[i].removeEventListener("click", filterStars);
+    }
+    let rating = e.target.id;
     let deleteRow = [];
     for (let i = 0; i < rating; i++)
         stars[i].innerHTML = "&#9733;";
@@ -203,11 +211,37 @@ function reset() {
     document.querySelector("#search").value = "";
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
+    {
         stars[i].innerHTML = "&#9734;";
+        stars[i].addEventListener("click", filterStars, false);
+    }
     if (document.querySelector('#expBtn'))
     {
         expand = false;
         toggleExpanded();
+    }
+    document.querySelector('#respResetBtn').removeEventListener('click',reset);
+    document.querySelector('#respResetBtn').style.cursor = 'default';
+}
+
+function toggleFilter() {
+    if (document.querySelector('#search').parentElement.style['display'] !== 'inline-block')
+    {
+        document.querySelector('#search').parentElement.style['display'] = 'inline-block';
+        document.body.addEventListener('click',hideFilter,false);
+    }
+    else
+    {
+        document.querySelector('#search').parentElement.style['display'] = 'none';
+        document.body.removeEventListener('click',hideFilter);
+    }
+}
+
+function hideFilter(e) {
+    if (e.target.children.length > 0 && e.target.children[0].id !== 'search' && e.target.tagName !== 'HR' || e.target.id === "headerText" || e.target.innerHTML === "Filter Movies")
+    {
+        document.querySelector('#search').parentElement.style['display'] = 'none';
+        document.body.removeEventListener('click',hideFilter);
     }
 }
 
@@ -254,7 +288,10 @@ function toggleExpanded() {
 
 function openDropdown(e) {
     e.stopPropagation();
-    document.querySelector("#dropdown").style.display = 'block';
+    if (document.querySelector("#dropdown").style.display === 'block')
+        document.querySelector("#dropdown").style.display = 'none';
+    else
+        document.querySelector("#dropdown").style.display = 'block';
     document.body.addEventListener("click", closeDropdown, false);
 }
 
