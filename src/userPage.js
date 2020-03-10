@@ -1,5 +1,5 @@
 // make all the necessary changes
-document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}hr{margin:0;padding:0}header{background-color:#222222;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{display:block;padding:.15em 0 0 .15em}h3{margin:0;padding:.5em .2em;}ul{margin:0;padding:0 0 .5em 1.5em;transition:max-height .2s;overflow:hidden;}.dir{cursor:pointer;transition:.4s;padding:1em;background-color:#fff;}.dir:hover{background-color:#F8FA7E;padding-left:2em}.inline{display:inline;}.active{padding-left:2em;}.container{width:75%;margin-left:12.5%;background-color:#FFF;}.appears{display:none;}.dropdown{width:200px;transition: 0s;}div .dropdown{border-width:2px 0 0 0;border-style:solid;border-color:grey;}#respResetBtn{color:#fff;text-align:center;cursor:default;font-size:2em;width:40px;height:40px;}#dropdown{position:absolute;z-index:5;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;margin-top:35px;text-align:center;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#burgerMenu{cursor:pointer;padding:0 1em;}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}@media screen and (max-width: 870px){.disappears{display:none;}.appears{display:inline-block;}#headerText{margin-top:10px;}header{display:block;}.active{padding-left:1em;}#filterDiv{position:absolute;top:35%;background-color:#fff;left:5%;width:90%;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#btnDiv{display:none}}</style>';
+document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><link rel="icon" type="image/png" href="https://mymdb.org/icons/mymdb.png" /><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Gothic,sans-serif;background-color:#CCC;}hr{margin:0;padding:0}header{background-color:#222222;display:flex;width:100%;justify-content:space-between;}a{text-decoration:none;}li{display:block;padding:.15em 0 0 .15em}h3{margin:0;padding:.5em .2em;}ul{margin:0;padding:0 0 .5em 1.5em;transition:max-height .2s;overflow:hidden;}.dir{cursor:pointer;transition:.4s;padding:1em;background-color:#fff;}.dir:hover{background-color:#F8FA7E;padding-left:2em}.inline{display:inline;}.active{padding-left:2em;}.container{width:75%;margin-left:12.5%;background-color:#FFF;}.appears{display:none;}.dropdown{width:200px;transition: 0s;}div .dropdown{border-width:2px 0 0 0;border-style:solid;border-color:grey;}#respResetBtn{color:#fff;text-align:center;cursor:default;font-size:2em;width:40px;height:40px;}#dropdown{position:absolute;z-index:5;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#mymdbIcon{font-family:Arial,Helvetica,sans-serif;display:inline-block;padding:0.2em;background-color:#E4CD17;color:#000;margin:25% 1em;border-radius:10px;cursor:pointer;}#headerText{color:#E4CD17;margin-top:35px;text-align:center;}#search{border-radius:20px;display:inline-block;margin:1.5em;}#stars{color:#FFF;cursor:pointer;}#filterDiv{width:10%}#burgerMenu{cursor:pointer;padding:0 1em;}#imdbLink{padding:0;color:#E4CD17;font-family:Gothic,sans-serif;}@media screen and (max-width: 870px){.disappears{display:none;}.appears{display:inline-block;}#headerText{margin-top:10px;}header{display:block;}.active{padding-left:1em;}#filterDiv{position:absolute;top:35%;background-color:#fff;left:5%;width:90%;box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);}#btnDiv{display:none}.dir:hover{padding-left:1em}}</style>';
 
 document.body.removeChild(document.body.children[0]);
 const header = document.createElement("header");
@@ -10,6 +10,8 @@ list.classList.add("container");
 document.body.appendChild(list);
 browser.storage.sync.get("username", gotUsername);
 document.querySelector("#search").addEventListener("change", filter, false);
+var dirFilter = "";
+var ratingsFilter = "0";
 reset();
 addStars();
 var expand = true;
@@ -52,19 +54,25 @@ function gotMovies(data) {
             {
                 if (key[0] === 't' && key[1] === 't')
                     // movie
-                    movies[key] = {"title":data[key][0],"rating":data[key][1]};
+                {
+                    if (ratingsFilter === "0" || ratingsFilter === data[key][1])
+                        movies[key] = {"title":data[key][0],"rating":data[key][1]};
+                }
                 else
                     // director
-                    directors.push({"name":key,"movies":data[key]});
+                {
+                    if (dirFilter.length <= 0 || key.includes(dirFilter))
+                        directors.push({"name":key,"movies":data[key]});
+                }
             }
         });
         directors.forEach(function(dir) {
             // filter null elements
             let hasMovie = false;
             dir['movies'].forEach(function(movie) {
-                if (typeof movie !== 'undefined' && movie !== null)
+                if (typeof movie !== 'undefined' && movie !== null && ((typeof movies[movie] !== 'undefined' && movies[movie]['rating']) === ratingsFilter || ratingsFilter === "0"))
                     hasMovie = true;})
-            if (typeof dir === "object" && hasMovie && dir['name'].length > 0)
+            if (typeof dir === "object" && hasMovie && dir['name'].length > 0 && (dirFilter.length <= 0 || dir['name'].includes(dirFilter)))
             {
                 let dirItem = document.createElement("div");
                 dirItem.addEventListener("click", toggleHidden, false);
@@ -93,6 +101,7 @@ function filter() {
     if (pattern.length < 1)
         if (document.querySelector("#resetBtn") !== null)
         {
+            dirFilter = "";
             reset();
             return;
         }
@@ -136,8 +145,14 @@ function addReset() {
     document.querySelector('#btnDiv').appendChild(rstBtn);
     rstBtn.classList.add('dir');
     rstBtn.addEventListener("click", reset);
-    document.querySelector("#respResetBtn").addEventListener("click", reset, false);
+    document.querySelector("#respResetBtn").addEventListener("click", clickReset, false);
     document.querySelector('#respResetBtn').style.cursor = 'pointer';
+}
+
+function clickReset() {
+    dirFilter = "";
+    ratingsFilter = "0";
+    reset();
 }
 
 function addStars() {
@@ -151,15 +166,15 @@ function addStars() {
 
 function filterStars(e) {
     let stars = document.querySelector("#stars").children;
-    for (let i = 0; i < stars.length; i++)
-    {
-        stars[i].setAttribute("id",i+1);
-        stars[i].removeEventListener("click", filterStars);
-    }
-    let rating = e.target.id;
+    ratingsFilter = e.target.id;
+    let rating = parseInt(ratingsFilter);
     let deleteRow = [];
-    for (let i = 0; i < rating; i++)
-        stars[i].innerHTML = "&#9733;";
+    for (let i = 0; i < 10; i++)
+        if (i < rating)
+            stars[i].innerHTML = "&#9733;";
+        else
+            stars[i].innerHTML = "&#9734;";
+/*
     let pattern = "(" + rating + ")";
     if (pattern.length < 1)
         return;
@@ -197,24 +212,25 @@ function filterStars(e) {
     }
     for (let i = 0; i < deleteRow.length; i++)
         deleteRow[i].parentElement.removeChild(deleteRow[i]);
-    expand = true;
+    expand = true;*/
+    reset();
     toggleExpanded();
     addReset();
 }
 
 function reset() {
     let btn = document.querySelector("#resetBtn");
-    if (btn !== null)
+    if (btn !== null && ratingsFilter === "0" && dirFilter.length <= 0)
         btn.parentElement.removeChild(btn);
     list.innerHTML = "";
     browser.storage.sync.get(null, gotMovies);
     document.querySelector("#search").value = "";
-    let stars = document.querySelector("#stars").children;
+/*    let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
     {
         stars[i].innerHTML = "&#9734;";
         stars[i].addEventListener("click", filterStars, false);
-    }
+    }*/
     if (document.querySelector('#expBtn'))
     {
         expand = false;
@@ -249,15 +265,16 @@ function toggleHidden(e) {
     let hiddenElement = e.target;
     while (hiddenElement.tagName !== 'DIV')
         hiddenElement = hiddenElement.parentElement;
-    hiddenElement.classList.toggle('active');
     hiddenElement = hiddenElement.children[1];
     if (hiddenElement.style.maxHeight === '0px')
     {
         hiddenElement.style.maxHeight = hiddenElement.scrollHeight + 'px';
+        hiddenElement.parentElement.classList.add('active');
     }
     else
     {
         hiddenElement.style.maxHeight = '0px';
+        hiddenElement.parentElement.classList.remove('active');
     }
 }
 
@@ -266,11 +283,13 @@ function toggleExpanded() {
     lists.forEach(function(elem) {
         if (!expand)
         {
-            elem.style.maxHeight = '0px';
+            elem.style.maxHeight = '0px';            
+            elem.parentElement.classList.remove('active');
         }
         else
         {
             elem.style.maxHeight = elem.scrollHeight + 'px';
+            elem.parentElement.classList.add('active');
         }
     });
     if (expand)
