@@ -2,6 +2,7 @@ var directors = [];
 var movieCounter = 0;
 var movieAmount = 0;
 
+
 function readRatings(e) {
     e.preventDefault();
     let input = document.querySelector("#file").files[0];
@@ -21,7 +22,7 @@ function parseRatings(dataString) {
         let fields = lines[i].split(',');
         let title = fields[3]
         // handle decimal points in title
-        if (title[0] === "\"")
+        if (typeof title !== 'undefined' && title[0] === "\"")
         {
             title = title.substr(1, title.length-1);
             for (let i = 4; i < fields.length; i++)
@@ -76,8 +77,13 @@ function parseRatings(dataString) {
     }
 }
 
-function storeRatings(e) {
+function refreshRatings(e) {
     e.preventDefault();
+    browser.storage.sync.clear(storeRatings);
+    updateUsername();
+}
+
+function storeRatings() {
     let items = Object.keys(directors);
     document.querySelector("#output").innerHTML = "Storing Ratings";
     items.forEach(function(dir) {
@@ -92,6 +98,13 @@ function storeRatings(e) {
         store[dir] = dirMovies;
         browser.storage.sync.set(store);
     });
+}
+
+function updateUsername(e) {
+    if (e)
+        e.preventDefault();
+    let store = {'username':document.querySelector('#username').value};
+    browser.storage.sync.set(store);
 }
 
 function getStorage() {
@@ -111,15 +124,25 @@ function progressBar() {
     }
 }
 
-function outputRating(elem) {
-    let output = document.createElement("li");
-    output.innerHTML = JSON.stringify(elem);
-    document.querySelector("#output").appendChild(output);
+function outputRating(data) {
+    let output = [];
+    Object.keys(data).forEach(function(key) {
+        if (key === 'username')
+            document.querySelector("#username").value = data[key]
+        else
+            output.push(key + ": " + data[key]);
+    });
+    output.forEach(function(line) {
+        let elem = document.createElement("p");
+        elem.innerHTML = line;
+        document.querySelector('#output').appendChild(elem);
+    });
 }
 
 document.addEventListener("DOMContentLoaded", getStorage);
 document.querySelector("#file").addEventListener("change", readRatings, false);
-document.querySelector("#submit").addEventListener("click", storeRatings, false);
+document.querySelector("#submit").addEventListener("click", refreshRatings, false);
+document.querySelector("#usernameBtn").addEventListener("click", updateUsername, false);
 
 
 //    Copyright (c) 2019-2020

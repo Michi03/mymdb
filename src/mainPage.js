@@ -1,4 +1,4 @@
-let menu = document.querySelector("#imdbHeader").children[1];
+let menu = document.querySelector("#imdbHeader").children[1]; 
 const mymdbLink = document.createElement("a");
 mymdbLink.href = "/mymdb";
 mymdbLink.innerHTML = "<b style='color:#E4CD17'>MyMDb</b>";
@@ -6,8 +6,8 @@ menu.appendChild(mymdbLink);
 browser.storage.sync.get("username", gotUsername);
 
 function gotUsername(data) {
-    let menu = document.querySelector("#imdbHeader").children[1];
-    if (menu.children[menu.children.length-2].children[0].children[1].children[1].children[0].innerHTML !== data['username'])
+    let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
+    if (typeof data['username'] !== "undefined" && username !== data['username'])
         mymdbLink.parentElement.removeChild(mymdbLink);
 }
 

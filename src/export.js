@@ -4,6 +4,14 @@ var progress = 0;
 var directors = [];
 var updateDiv = {};
 var success = false;
+browser.storage.sync.get("username", gotUsername);
+
+function gotUsername(data) {
+    let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
+    if (data['username'] && username !== data['username'])
+        document.querySelector("#syncBtn").parentElement.removeChild(document.querySelector("#syncBtn"));
+}
+
 
 function getRatings() {
     let xhttp = new XMLHttpRequest();
@@ -105,7 +113,7 @@ function updateDirs() {
     items.forEach(function(dir) {
         let store = {};
         store[dir] = directors[dir];
-	    console.log(dirCount++);
+	    dirCount++;
         browser.storage.sync.set(store,set);
     });
 }
