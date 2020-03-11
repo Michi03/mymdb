@@ -7,6 +7,17 @@ var storedRating = "0";
 var dirDiv = {};
 var dirMovies = {};
 var addedMovies = [];
+var disabled = false;
+browser.storage.sync.get("username", gotUsername);
+
+function gotUsername(data) {
+    let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
+    if (username !== data['username'])
+    {
+        dirDiv.parentElement.removeChild(dirDiv);
+        disabled = true;
+    }
+}
 
 (function() {
     if (window.hasRun === true)
@@ -40,7 +51,7 @@ function appendList(name) {
 
 function updateRating() {
     rating = document.querySelector(".star-rating").getAttribute("value");
-    if (storedRating !== rating && document.querySelector(".imdb-header__account-toggle--logged-in") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
+    if (!disabled && storedRating !== rating && document.querySelector(".imdb-header__account-toggle--logged-in") !== null && document.querySelector(".star-rating-button").classList[1] !== "open")
     {
         console.log("RATING CHANGED");
         storedRating = rating;

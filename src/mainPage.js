@@ -1,8 +1,15 @@
 let menu = document.querySelector("#imdbHeader").children[1];
-let mymdbLink = document.createElement("a");
+const mymdbLink = document.createElement("a");
 mymdbLink.href = "/mymdb";
 mymdbLink.innerHTML = "<b style='color:#E4CD17'>MyMDb</b>";
 menu.appendChild(mymdbLink);
+browser.storage.sync.get("username", gotUsername);
+
+function gotUsername(data) {
+    let menu = document.querySelector("#imdbHeader").children[1];
+    if (menu.children[menu.children.length-2].children[0].children[1].children[1].children[0].innerHTML !== data['username'])
+        mymdbLink.parentElement.removeChild(mymdbLink);
+}
 
 
 //    Copyright (c) 2019-2020

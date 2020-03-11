@@ -3,15 +3,13 @@ document.head.innerHTML ='<meta charset="utf-8"><title>MyMDb User Page</title><l
 
 document.body.removeChild(document.body.children[0]);
 const header = document.createElement("header");
-header.innerHTML = '<div id="burgerMenu" class="appears"><img height=30px width=40px src="https://mymdb.org/imgs/burger.png" /><div id="dropdown" style="display:none;"><div class="dir dropdown" style="border-style:none;">Expand All</div><div class="dir dropdown">Filter Movies</div><a href="https://mymdb.org/" style="color:#1ce796;" target="_blank"><div class="dir dropdown"><b>MyMDb</b></div></a><a href="/list/ratings" style="color:#E4CD17;" target="_blank"><div class="dropdown dir"><b>IMDb</b></div></a></div></div><div class="disappears"><a href="https://mymdb.org/" target="_blank"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings" target="_blank"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div class="disappears"><input type="text" id="search" placeholder="Filter Directors"><div id="respResetBtn" class="appears">&#8634;</div><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div><div id="btnDiv"></div></div>';
+header.innerHTML = '<div id="burgerMenu" class="appears"><img height=30px width=40px src="https://mymdb.org/imgs/burger.png" /><div id="dropdown" style="display:none;"><div class="dir dropdown" style="border-style:none;">Expand All</div><div class="dir dropdown">Filter Movies</div><a href="https://mymdb.org/" style="color:#1ce796;"><div class="dir dropdown"><b>MyMDb</b></div></a><a href="/list/ratings" style="color:#E4CD17;"><div class="dropdown dir"><b>IMDb</b></div></a></div></div><div class="disappears"><a href="https://mymdb.org/"><div id="mymdbIcon"><h2 class="inline">MyMDb</h2></div></a><a href="/list/ratings"><h2 id="imdbLink" class="inline">IMDB</h2></a></div><h1 class="inline" id="headerText">Your MyMDb Ratings</h1><div class="disappears"><input type="text" id="search" placeholder="Filter Directors"><div id="respResetBtn" class="appears">&#8634;</div><div id="stars"><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1><h1 class="inline">&#9734;</h1></div><div id="btnDiv"></div></div>';
 document.body.appendChild(header);
 const list = document.createElement("div");
 list.classList.add("container");
 document.body.appendChild(list);
 browser.storage.sync.get("username", gotUsername);
 document.querySelector("#search").addEventListener("change", filter, false);
-var dirFilter = "";
-var ratingsFilter = "0";
 reset();
 addStars();
 var expand = true;
@@ -54,25 +52,19 @@ function gotMovies(data) {
             {
                 if (key[0] === 't' && key[1] === 't')
                     // movie
-                {
-                    if (ratingsFilter === "0" || ratingsFilter === data[key][1])
-                        movies[key] = {"title":data[key][0],"rating":data[key][1]};
-                }
+                    movies[key] = {"title":data[key][0],"rating":data[key][1]};
                 else
                     // director
-                {
-                    if (dirFilter.length <= 0 || key.includes(dirFilter))
-                        directors.push({"name":key,"movies":data[key]});
-                }
+                    directors.push({"name":key,"movies":data[key]});
             }
         });
         directors.forEach(function(dir) {
             // filter null elements
             let hasMovie = false;
             dir['movies'].forEach(function(movie) {
-                if (typeof movie !== 'undefined' && movie !== null && ((typeof movies[movie] !== 'undefined' && movies[movie]['rating']) === ratingsFilter || ratingsFilter === "0"))
+                if (typeof movie !== 'undefined' && movie !== null)
                     hasMovie = true;})
-            if (typeof dir === "object" && hasMovie && dir['name'].length > 0 && (dirFilter.length <= 0 || dir['name'].includes(dirFilter)))
+            if (typeof dir === "object" && hasMovie && dir['name'].length > 0)
             {
                 let dirItem = document.createElement("div");
                 dirItem.addEventListener("click", toggleHidden, false);
@@ -101,7 +93,6 @@ function filter() {
     if (pattern.length < 1)
         if (document.querySelector("#resetBtn") !== null)
         {
-            dirFilter = "";
             reset();
             return;
         }
@@ -145,14 +136,8 @@ function addReset() {
     document.querySelector('#btnDiv').appendChild(rstBtn);
     rstBtn.classList.add('dir');
     rstBtn.addEventListener("click", reset);
-    document.querySelector("#respResetBtn").addEventListener("click", clickReset, false);
+    document.querySelector("#respResetBtn").addEventListener("click", reset, false);
     document.querySelector('#respResetBtn').style.cursor = 'pointer';
-}
-
-function clickReset() {
-    dirFilter = "";
-    ratingsFilter = "0";
-    reset();
 }
 
 function addStars() {
@@ -166,18 +151,11 @@ function addStars() {
 
 function filterStars(e) {
     let stars = document.querySelector("#stars").children;
-    ratingsFilter = e.target.id;
-    let rating = parseInt(ratingsFilter);
+    let rating = e.target.id;
     let deleteRow = [];
-    for (let i = 0; i < 10; i++)
-        if (i < rating)
+    for (let i = 0; i < rating; i++)
             stars[i].innerHTML = "&#9733;";
-        else
-            stars[i].innerHTML = "&#9734;";
-/*
     let pattern = "(" + rating + ")";
-    if (pattern.length < 1)
-        return;
     for (let n = 0; n < list.children.length; n++)
     {
         let row = list.children[n];
@@ -212,25 +190,24 @@ function filterStars(e) {
     }
     for (let i = 0; i < deleteRow.length; i++)
         deleteRow[i].parentElement.removeChild(deleteRow[i]);
-    expand = true;*/
-    reset();
+    expand = true;
     toggleExpanded();
     addReset();
 }
 
 function reset() {
     let btn = document.querySelector("#resetBtn");
-    if (btn !== null && ratingsFilter === "0" && dirFilter.length <= 0)
+    if (btn !== null)
         btn.parentElement.removeChild(btn);
     list.innerHTML = "";
     browser.storage.sync.get(null, gotMovies);
     document.querySelector("#search").value = "";
-/*    let stars = document.querySelector("#stars").children;
+    let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)
     {
         stars[i].innerHTML = "&#9734;";
         stars[i].addEventListener("click", filterStars, false);
-    }*/
+    }
     if (document.querySelector('#expBtn'))
     {
         expand = false;
@@ -238,6 +215,9 @@ function reset() {
     }
     document.querySelector('#respResetBtn').removeEventListener('click',reset);
     document.querySelector('#respResetBtn').style.cursor = 'default';
+    if (document.querySelector("#dropdown").children[1].innerHTML === "Reset Filter")
+        document.querySelector("#dropdown").removeChild(document.querySelector("#dropdown").children[1]);
+
 }
 
 function toggleFilter() {
@@ -245,23 +225,44 @@ function toggleFilter() {
     {
         document.querySelector('#search').parentElement.style['display'] = 'inline-block';
         document.body.addEventListener('click',hideFilter,false);
+        if (document.querySelector("#dropdown").children[1].innerHTML === "Reset Filter")
+            document.querySelector("#dropdown").removeChild(document.querySelector("#dropdown").children[1]);
     }
     else
     {
         document.querySelector('#search').parentElement.style['display'] = 'none';
         document.body.removeEventListener('click',hideFilter);
+        if (typeof document.querySelector("#respResetBtn").style.cursor !== "undefined" && document.querySelector("#respResetBtn").style.cursor === "pointer")
+        {
+            let resetBtn = document.createElement('div');
+            resetBtn.classList.add('dir');
+            resetBtn.classList.add('dropdown');
+            document.querySelector('#dropdown').insertBefore(document.querySelector('#dropdown').children[1],resetBtn);
+            resetBtn.addEventListener('click',reset,false);
+        }
     }
 }
 
 function hideFilter(e) {
-    if (e.target.children.length > 0 && e.target.children[0].id !== 'search' && e.target.tagName !== 'HR' || e.target.id === "headerText" || e.target.innerHTML === "Filter Movies")
+    if (e.target === document.body || e.target.tagName === "HEADER" || e.target.id === "headerText" || e.target.innerHTML === "Filter Movies")
     {
         document.querySelector('#search').parentElement.style['display'] = 'none';
         document.body.removeEventListener('click',hideFilter);
+        if (typeof document.querySelector("#respResetBtn").style.cursor !== "undefined" && document.querySelector("#respResetBtn").style.cursor === "pointer")
+        {
+            let resetBtn = document.createElement('div');
+            resetBtn.classList.add('dir');
+            resetBtn.classList.add('dropdown');
+            resetBtn.innerHTML = 'Reset Filter';
+            document.querySelector('#dropdown').insertBefore(resetBtn,document.querySelector('#dropdown').children[1]);
+            resetBtn.addEventListener('click',reset,false);
+        }
     }
 }
 
 function toggleHidden(e) {
+    if (e.target.tagName === "A")
+        return;
     let hiddenElement = e.target;
     while (hiddenElement.tagName !== 'DIV')
         hiddenElement = hiddenElement.parentElement;

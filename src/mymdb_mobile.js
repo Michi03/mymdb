@@ -8,6 +8,18 @@ var storedRating = "Rate";
 var dirDiv = {};
 var dirMovies = {};
 var addedMovies = [];
+var disabled = false;
+browser.storage.sync.get("username", gotUsername);
+
+function gotUsername(data) {
+    let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
+    if (username !== data['username'])
+    {
+        dirDiv.parentElement.removeChild(dirDiv);
+        disabled = true;
+    }
+}
+
 
 (function() {
     if (window.hasRun === true)
