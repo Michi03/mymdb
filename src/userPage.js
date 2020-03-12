@@ -8,7 +8,7 @@ document.body.appendChild(header);
 const list = document.createElement("div");
 list.classList.add("container");
 document.body.appendChild(list);
-browser.storage.sync.get("username", gotUsername);
+chrome.storage.sync.get("username", gotUsername);
 document.querySelector("#search").addEventListener("change", filter, false);
 reset();
 addStars();
@@ -200,7 +200,7 @@ function reset() {
     if (btn !== null)
         btn.parentElement.removeChild(btn);
     list.innerHTML = "";
-    browser.storage.sync.get(null, gotMovies);
+    chrome.storage.sync.get(null, gotMovies);
     document.querySelector("#search").value = "";
     let stars = document.querySelector("#stars").children;
     for (let i = 0; i < stars.length; i++)

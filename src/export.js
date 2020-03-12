@@ -4,7 +4,7 @@ var progress = 0;
 var directors = [];
 var updateDiv = {};
 var success = false;
-browser.storage.sync.get("username", gotUsername);
+chrome.storage.sync.get("username", gotUsername);
 
 function gotUsername(data) {
     let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
@@ -42,7 +42,7 @@ function parseRatings(dataString) {
     // add Username to store
     let store = {};
     store["username"] = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
-    browser.storage.sync.set(store);
+    chrome.storage.sync.set(store);
     let lines = dataString.split(/\r\n|\n/);
     movieCount = lines.length - 2;
     updateDiv = document.createElement("div");
@@ -76,7 +76,7 @@ function parseRatings(dataString) {
         let movie = {"id": fields[0], "title": title, "rating": fields[1]};
         let store = {};
         store[movie.id] = [movie.title,movie.rating];
-        browser.storage.sync.set(store,set);
+        chrome.storage.sync.set(store,set);
         // get director(s)
         let curDir = fields[fields.length-1];
         if (curDir[curDir.length-1] === "\"")
@@ -114,7 +114,7 @@ function updateDirs() {
         let store = {};
         store[dir] = directors[dir];
 	    dirCount++;
-        browser.storage.sync.set(store,set);
+        chrome.storage.sync.set(store,set);
     });
 }
 

@@ -9,7 +9,7 @@ var dirDiv = {};
 var dirMovies = {};
 var addedMovies = [];
 var disabled = false;
-browser.storage.sync.get("username", gotUsername);
+chrome.storage.sync.get("username", gotUsername);
 
 function gotUsername(data) {
     let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;
@@ -32,11 +32,11 @@ function gotUsername(data) {
     dirDiv.id = "mymdb";
     dirDiv.setAttribute("class", "btn-full");
     document.querySelector("#cast-and-crew").appendChild(dirDiv);
-    browser.storage.sync.get(directorName, gotDir);
+    chrome.storage.sync.get(directorName, gotDir);
     if (dirList.length > 1)
     {
         secondDirector = dirList[1];
-        browser.storage.sync.get(secondDirector, gotDir);
+        chrome.storage.sync.get(secondDirector, gotDir);
     }
 })();
 
@@ -69,7 +69,7 @@ function updateRating() {
                     delete(dirMovies[directorName][idx]);
                     let store = {};
                     store[directorName] = dirMovies[directorName];
-                    browser.storage.sync.set(store, onSet);
+                    chrome.storage.sync.set(store, onSet);
                 }
             });
             if (secondDirector !== "")
@@ -80,7 +80,7 @@ function updateRating() {
                         delete(dirMovies[secondDirector][idx]);
                         let store = {};
                         store[secondDirector] = dirMovies[secondDirector];
-                        browser.storage.sync.set(store, onSet);
+                        chrome.storage.sync.set(store, onSet);
                     }
                 });
             }
@@ -89,7 +89,7 @@ function updateRating() {
         {
             let store = {};
             store[id] = [title,rating];
-            browser.storage.sync.set(store, onSet);
+            chrome.storage.sync.set(store, onSet);
             for (let i = 0; true; i++)
             {
                 movie = dirMovies[directorName][i];
@@ -101,7 +101,7 @@ function updateRating() {
                     dirMovies[directorName].push(id);
                     store = {};
                     store[directorName] = dirMovies[directorName];
-                    browser.storage.sync.set(store, onSet);
+                    chrome.storage.sync.set(store, onSet);
                     break;
                 }
             }
@@ -118,7 +118,7 @@ function updateRating() {
                         dirMovies[secondDirector].push(id);
                         store = {};
                         store[secondDirector] = dirMovies[secondDirector];
-                        browser.storage.sync.set(store, onSet);
+                        chrome.storage.sync.set(store, onSet);
                         return;
                     }
                 }
@@ -157,7 +157,7 @@ function gotDir(directorObj) {
         dirMovies[key] = directorObj[key];
         dirMovies[key].forEach(function(movie) {
             if (typeof movie !== "undefined" && movie !== null && typeof document.getElementById(key)  !== 'undefined' && document.getElementById(key) !== null)
-                browser.storage.sync.get(movie, gotMovie);
+                chrome.storage.sync.get(movie, gotMovie);
         });
     }
     else
