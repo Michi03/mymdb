@@ -3,7 +3,7 @@ const mymdbLink = document.createElement("a");
 mymdbLink.href = "/mymdb";
 mymdbLink.innerHTML = "<b style='color:#E4CD17'>MyMDb</b>";
 menu.appendChild(mymdbLink);
-chrome.storage.sync.get("username", gotUsername);
+browser.storage.sync.get("username", gotUsername);
 
 function gotUsername(data) {
     let username = document.querySelectorAll(".imdb-header__account-toggle--logged-in")[1].innerHTML;

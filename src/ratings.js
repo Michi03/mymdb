@@ -79,7 +79,7 @@ function parseRatings(dataString) {
 
 function refreshRatings(e) {
     e.preventDefault();
-    chrome.storage.sync.clear(storeRatings);
+    browser.storage.sync.clear(storeRatings);
     updateUsername();
 }
 
@@ -92,11 +92,11 @@ function storeRatings() {
             dirMovies.push(movie.id);
             let store = {};
             store[movie.id] = [movie.title,movie.rating];
-            chrome.storage.sync.set(store, progressBar);
+            browser.storage.sync.set(store, progressBar);
         });
         let store = {};
         store[dir] = dirMovies;
-        chrome.storage.sync.set(store);
+        browser.storage.sync.set(store);
     });
 }
 
@@ -104,11 +104,11 @@ function updateUsername(e) {
     if (e)
         e.preventDefault();
     let store = {'username':document.querySelector('#username').value};
-    chrome.storage.sync.set(store);
+    browser.storage.sync.set(store);
 }
 
 function getStorage() {
-    chrome.storage.sync.get(null, outputRating);
+    browser.storage.sync.get(null, outputRating);
 }
 
 function progressBar() {

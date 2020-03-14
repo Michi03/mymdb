@@ -35,6 +35,11 @@
       "https://*.imdb.com/mymdb",
       "storage"
     ],
+    "applications": {
+      "gecko": {
+        "id": "mymdb@Michi03.com"
+      }
+    },
     "options_ui": {
       "page": "ratings.html"
     }
